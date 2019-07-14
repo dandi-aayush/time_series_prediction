@@ -8,21 +8,19 @@ import matplotlib.pyplot as plt
 from sklearn.preprocessing import MinMaxScaler
 import pickle
 
-def to_supervised(data):
-    ret = np.zeros((data.shape[0]-4, 2))
+def to_supervised(data, interval):                                      #creates X-Y pairs
+    ret = np.zeros((data.shape[0]-interval, 2))
     for i in range(ret.shape[0]):
         ret[i, 0] = data[i]
-        ret[i, 1] = data[i+4]
+        ret[i, 1] = data[i+interval]
     return ret
 
 def scale(train, test):
     scaler = MinMaxScaler(feature_range = (-1,1))
-    scaler = scaler.fit(train)
-    train = np.reshape(train, (train.shape[0], train.shape[1]))
-    test = np.reshape(test, (test.shape[0], test.shape[1]))
-    ret_train = scaler.transform(train)
+    scaler = scaler.fit(train)                                          #creates range             
+    ret_train = scaler.transform(train)                                 #transforms the data
     ret_test = scaler.transform(test)
-    pickle.dump(scaler,open('scaler.pickle', 'wb'))
+    pickle.dump(scaler,open('scaler.pickle', 'wb'))                     #saves the scaler for later use
     return scaler, ret_train, ret_test
 
 def inverse_scaling(scaler, X, value):
